@@ -30,7 +30,7 @@ Konuşun; yazdıklarınız **o anda odakta olan pencereye** gerçek klavye giri�
 
 ## 📥 İndirme ve kurulum
 
-1. [**Releases**](../../releases/latest) sayfasından `SesliYazma_Kurulum.exe` dosyasını indirin.
+1. [**Releases**](https://github.com/sinancan1/sesli-yazma/releases/latest) sayfasından `SesliYazma_Kurulum.exe` dosyasını indirin.
 2. Dosyayı çift tıklayın → **İleri → Kur → Bitir**.
 3. İsterseniz kurulum sırasında **"Masaüstü kısayolu oluştur"** seçeneğini işaretleyin.
 4. Masaüstündeki **Sesli Yazma** kısayolundan programı açın.
@@ -38,6 +38,8 @@ Konuşun; yazdıklarınız **o anda odakta olan pencereye** gerçek klavye giri�
 > **Windows SmartScreen uyarısı:** Uygulama ücretsiz ve açık kaynak olduğu için dijital imza yoktur. "Windows bilgisayarınızı korudu" ekranı çıkarsa **Ek bilgi → Yine de çalıştır** deyin.
 
 **Sistem gereksinimleri:** Windows 10/11 (64-bit), internet bağlantısı, mikrofon.
+
+> **Kurulum, Microsoft Visual C++ 2015-2022 (x64) çalışma zamanını da kontrol eder; kurulu değilse kurulum tarafından otomatik kurulur.** Ayrı bir işlem yapmanız gerekmez.
 
 ### Kurulum olmadan (kaynak koddan)
 
