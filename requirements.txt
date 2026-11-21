@@ -1,0 +1,5 @@
+sounddevice>=0.4.6
+numpy>=1.26
+SpeechRecognition>=3.10.0
+audioop-lts>=0.2.1 ; python_version >= '3.13'
+pynput>=1.7.6
