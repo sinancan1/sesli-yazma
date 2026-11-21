@@ -19,3 +19,6 @@ installer_output/
 Thumbs.db
 desktop.ini
 *.log
+
+# Redist (build-time)
+redist/
