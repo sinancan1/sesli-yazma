@@ -67,10 +67,96 @@ SENSITIVITY_LEVELS = {
     "Yüksek": 2.2,
     "Çok yüksek": 1.6,
 }
-# Uzun ifadeler önce gelmeli (regex alternation sırası).
+# Arayüz dili seçici: konuşma dili Türkçe ise Türkçe, aksi halde İngilizce
+UI_LANGS = ["Türkçe", "English"]
+
+_STRINGS = {
+    "tr": {
+        "title": "Sesli Yazma · Google",
+        "status_closed": "● Kapalı — F9'a basıp konuşun",
+        "status_stopped": "● Komut bekleniyor — 'başlat' deyin veya F9'a basın",
+        "status_stopping": "■ Durduruluyor…",
+        "status_listening": "● Dinliyor… konuşabilirsiniz",
+        "status_mic_switching": "● Mikrofon değiştiriliyor…",
+        "status_speech_detected": "● Konuşma algılandı…",
+        "status_listening2": "● Dinliyor…",
+        "status_sending": "◇ Google'a gönderiliyor…",
+        "status_silent": "◇ (sessiz parça, atlandı)",
+        "status_not_understood": "◇ Bu parça anlaşılamadı",
+        "status_google_error": "◇ Google hizmetine ulaşılamadı: {exc}",
+        "status_rec_error": "◇ Tanıma hatası: {exc}",
+        "status_recognized": "◇ Tanındı: {preview}",
+        "status_typed": "● Yazıldı ✓",
+        "status_empty": "◇ (boş parça)",
+        "status_type_error": "◇ Yazma hatası: {exc}",
+        "status_fatal_mic": "Mikrofon hatası: {exc}",
+        "status_fatal_hotkey": "Kısayol hatası: {exc}",
+        "status_stopped_cmd": "● Komut bekleniyor — 'başlat' deyin",
+        "status_paused_cmd": "■ Durduruldu (sesli komut)",
+        "status_fast_on": "● Hızlı mod açık",
+        "status_fast_off": "● Normal mod",
+        "status_caps_on": "● BÜYÜK HARF modu açık",
+        "status_caps_off": "● küçük harf modu",
+        "status_mic_ready": "● Mikrofon hazır",
+        "btn_start": "▶ Başlat",
+        "btn_stop": "■ Durdur",
+        "label_lang": "Dil",
+        "label_mic": "Mik",
+        "label_sens": "Hass",
+        "chk_fast": "Hızlı",
+        "help": "F9: başlat/durdur · F10: pencereyi geri getir · Hassasiyet: uzaktan için 'Çok yüksek'",
+    },
+    "en": {
+        "title": "Voice Typing · Google",
+        "status_closed": "● Closed — press F9 to start",
+        "status_stopped": "● Waiting for command — say 'start' or press F9",
+        "status_stopping": "■ Stopping…",
+        "status_listening": "● Listening… you can speak",
+        "status_mic_switching": "● Switching microphone…",
+        "status_speech_detected": "● Speech detected…",
+        "status_listening2": "● Listening…",
+        "status_sending": "◇ Sending to Google…",
+        "status_silent": "◇ (silent segment, skipped)",
+        "status_not_understood": "◇ This segment was not understood",
+        "status_google_error": "◇ Could not reach Google service: {exc}",
+        "status_rec_error": "◇ Recognition error: {exc}",
+        "status_recognized": "◇ Recognized: {preview}",
+        "status_typed": "● Typed ✓",
+        "status_empty": "◇ (empty segment)",
+        "status_type_error": "◇ Typing error: {exc}",
+        "status_fatal_mic": "Microphone error: {exc}",
+        "status_fatal_hotkey": "Hotkey error: {exc}",
+        "status_stopped_cmd": "● Waiting for command — say 'start'",
+        "status_paused_cmd": "■ Stopped (voice command)",
+        "status_fast_on": "● Fast mode on",
+        "status_fast_off": "● Normal mode",
+        "status_caps_on": "● CAPS mode on",
+        "status_caps_off": "● lowercase mode",
+        "status_mic_ready": "● Microphone ready",
+        "btn_start": "▶ Start",
+        "btn_stop": "■ Stop",
+        "label_lang": "Lang",
+        "label_mic": "Mic",
+        "label_sens": "Sens",
+        "chk_fast": "Fast",
+        "help": "F9: start/stop · F10: restore window · Sensitivity: 'Very high' for distant speech",
+    },
+}
+
+def _ui_lang(code: str) -> str:
+    return "tr" if str(code).lower().startswith("tr") else "en"
+
+def _tr(code: str, key: str, **kw) -> str:
+    s = _STRINGS[_ui_lang(code)].get(key, key)
+    try:
+        return s.format(**kw) if kw else s
+    except Exception:
+        return s
+
 def _norm(s: str) -> str:
     """Türkçe karakterleri ASCII'ye çevirir (komut eşleştirme için)."""
     return s.lower().strip().translate(str.maketrans("çğıöşü", "cgiosu"))
+
 
 TEXT_COMMANDS: dict[str, str] = {
     "noktalı virgül": ";",
@@ -162,6 +248,8 @@ class App(tk.Tk):
         self._ui_on = False
         self._shutdown = False
         self._lang = LANGS["Türkçe"][0]
+        self._t = lambda key, **kw: _tr(self._lang, key, **kw)
+        self.title(self._t("title"))
         self._last_hotkey = 0.0
         self._typist = pynput_kb.Controller()
         self.fast_mode = tk.BooleanVar(value=False)
@@ -172,6 +260,7 @@ class App(tk.Tk):
         self._our_hwnd = None
 
         self._build_ui()
+        self._on_lang()
         self._refresh_devices()
         self._rec_device = self._selected_device()
         self.after(80, self._poll)
@@ -189,21 +278,23 @@ class App(tk.Tk):
         main = ttk.Frame(self, padding=(10, 8))
         main.pack(fill="both", expand=True)
 
-        self.status_var = tk.StringVar(value="● Kapalı — F9'a basıp konuşun")
+        self.status_var = tk.StringVar(value=self._t("status_closed"))
         ttk.Label(main, textvariable=self.status_var,
                   font=("Segoe UI", 10, "bold")).pack(anchor="w")
 
         row1 = ttk.Frame(main)
         row1.pack(fill="x", pady=(6, 2))
-        self.start_btn = ttk.Button(row1, text="▶ Başlat", width=10, command=self._toggle)
+        self.start_btn = ttk.Button(row1, text=self._t("btn_start"), width=10, command=self._toggle)
         self.start_btn.pack(side="left")
-        ttk.Label(row1, text="  Dil:").pack(side="left")
+        self._lbl_lang = ttk.Label(row1, text=f"  {self._t('label_lang')}:")
+        self._lbl_lang.pack(side="left")
         self.langvar = tk.StringVar(value="Türkçe")
         self.langbox = ttk.Combobox(row1, textvariable=self.langvar, width=13,
                                     values=list(LANGS), state="readonly")
         self.langbox.pack(side="left", padx=(2, 12))
         self.langvar.trace_add("write", self._on_lang)
-        ttk.Label(row1, text="Mik:").pack(side="left")
+        self._lbl_mic = ttk.Label(row1, text=f"{self._t('label_mic')}:")
+        self._lbl_mic.pack(side="left")
         self.devvar = tk.StringVar()
         self.devbox = ttk.Combobox(row1, textvariable=self.devvar, width=24, state="readonly")
         self.devbox.pack(side="left", padx=(2, 0))
@@ -213,18 +304,42 @@ class App(tk.Tk):
         row2.pack(fill="x", pady=(4, 0))
         self.bar = ttk.Progressbar(row2, maximum=100)
         self.bar.pack(side="left", fill="x", expand=True)
-        ttk.Checkbutton(row2, text="Hızlı", variable=self.fast_mode).pack(side="left", padx=(8, 0))
-        ttk.Label(row2, text=" Hass:").pack(side="left")
+        self._chk_fast = ttk.Checkbutton(row2, text=self._t("chk_fast"), variable=self.fast_mode)
+        self._chk_fast.pack(side="left", padx=(8, 0))
+        self._lbl_sens = ttk.Label(row2, text=f" {self._t('label_sens')}:")
+        self._lbl_sens.pack(side="left")
         ttk.Combobox(row2, textvariable=self.sensitivity, values=list(SENSITIVITY_LEVELS),
                      width=10, state="readonly").pack(side="left", padx=(2, 0))
 
-        ttk.Label(main, text="F9: başlat/durdur · F10: pencereyi geri getir · Hassasiyet: uzaktan için 'Çok yüksek'",
-                  foreground="#666").pack(anchor="w", pady=(6, 0))
+        self._lbl_help = ttk.Label(main, text=self._t("help"),
+                  foreground="#666")
+        self._lbl_help.pack(anchor="w", pady=(6, 0))
 
     def _on_lang(self, *_args) -> None:
         val = LANGS.get(self.langvar.get())
         if val:
             self._lang = val[0]
+            self._refresh_ui_lang()
+
+    def _refresh_ui_lang(self) -> None:
+        try:
+            self.title(self._t("title"))
+            if self.running:
+                self.start_btn.configure(text=self._t("btn_stop"))
+            else:
+                self.start_btn.configure(text=self._t("btn_start"))
+            if hasattr(self, "_lbl_lang"):
+                self._lbl_lang.configure(text=f"  {self._t('label_lang')}:")
+            if hasattr(self, "_lbl_mic"):
+                self._lbl_mic.configure(text=f"{self._t('label_mic')}:")
+            if hasattr(self, "_lbl_sens"):
+                self._lbl_sens.configure(text=f" {self._t('label_sens')}:")
+            if hasattr(self, "_chk_fast"):
+                self._chk_fast.configure(text=self._t("chk_fast"))
+            if hasattr(self, "_lbl_help"):
+                self._lbl_help.configure(text=self._t("help"))
+        except Exception:
+            pass
 
     def _refresh_devices(self) -> None:
         self._devices = [(None, "Sistem varsayılanı")]
@@ -269,7 +384,7 @@ class App(tk.Tk):
         self._rec_device = self._selected_device()
         if self._rec_thread and self._rec_thread.is_alive():
             self._restart_rec.set()
-            self.status_var.set("● Mikrofon değiştiriliyor…")
+            self.status_var.set(self._t("status_mic_switching"))
 
     # ── Pencere odağı çalmayan kart ──────────────────────────────────────
     def _on_map(self, _event=None) -> None:
@@ -301,7 +416,7 @@ class App(tk.Tk):
             with pynput_kb.Listener(on_press=on_press) as listener:
                 listener.join()
         except Exception as exc:
-            self._ui_q.put({"t": "fatal", "text": f"Kısayol hatası: {exc}"})
+            self._ui_q.put({"t": "fatal", "text": self._t("status_fatal_hotkey", exc=exc)})
 
     # ── Başlat / durdur ─────────────────────────────────────────────────
     def _toggle(self) -> None:
@@ -314,8 +429,8 @@ class App(tk.Tk):
             pass
         if self.running:
             self.running = False
-            self.status_var.set("■ Durduruluyor…")
-            self.start_btn.configure(text="▶ Başlat")
+            self.status_var.set(self._t("status_stopping"))
+            self.start_btn.configure(text=self._t("btn_start"))
         else:
             self._start_listening()
         # Yazma hedefi odakta kalsın: tıklama ile çalınan odağı geri ver
@@ -344,16 +459,16 @@ class App(tk.Tk):
         self._rec_device = device
         self.running = True
         self._ui_on = True
-        self.start_btn.configure(text="■ Durdur")
-        self._push({"t": "status", "text": "● Dinliyor… konuşabilirsiniz"})
+        self.start_btn.configure(text=self._t("btn_stop"))
+        self._push({"t": "status", "text": self._t("status_listening")})
 
     def _ui_off(self) -> None:
         if not self._ui_on:
             return
         self._ui_on = False
-        self.start_btn.configure(text="▶ Başlat")
+        self.start_btn.configure(text=self._t("btn_start"))
         self.devbox.configure(state="readonly")
-        self.status_var.set("● Komut bekleniyor — 'başlat' deyin veya F9'a basın")
+        self.status_var.set(self._t("status_stopped"))
 
     def _push(self, ev: dict) -> None:
         self._ui_q.put(ev)
@@ -385,9 +500,9 @@ class App(tk.Tk):
                 with sd.RawInputStream(samplerate=SAMPLE_RATE, blocksize=BLOCK_SIZE,
                                        channels=CHANNELS, dtype="int16", device=device) as stream:
                     if self.running:
-                        say("● Dinliyor… konuşabilirsiniz")
+                        say(self._t("status_listening"))
                     else:
-                        say("● Komut bekleniyor — 'başlat' deyin veya F9'a basın")
+                        say(self._t("status_stopped"))
                     while not self._shutdown and not self._restart_rec.is_set():
                         # hızlı mod değişikliğini anında uygula
                         silence_limit = FAST_SILENCE_BLOCKS if self.fast_mode.get() else SILENCE_BLOCKS
@@ -410,7 +525,7 @@ class App(tk.Tk):
                                 buf_seg.extend(chunk)
                                 seg_blocks = 1
                                 silence = 0
-                                say("● Konuşma algılandı…")
+                                say(self._t("status_speech_detected"))
                             else:
                                 pre.append(chunk)
                         else:
@@ -430,12 +545,12 @@ class App(tk.Tk):
                                 seg_blocks = 0
                                 silence = 0
                                 pre.clear()
-                                say("● Dinliyor…")
+                                say(self._t("status_listening2"))
             except Exception as exc:
                 if self._shutdown:
                     break
                 self.running = False
-                self._push({"t": "fatal", "text": f"Mikrofon hatası: {exc}"})
+                self._push({"t": "fatal", "text": self._t("status_fatal_mic", exc=exc)})
                 # Geçersiz/meşgul cihazda bekle; yeni cihaz seçilirse yeniden dene
                 while not self._shutdown and not self._restart_rec.is_set():
                     time.sleep(0.2)
@@ -454,14 +569,14 @@ class App(tk.Tk):
                 seg = self._seg_q.get(timeout=0.2)
             except queue.Empty:
                 continue
-            self._push({"t": "status", "text": "◇ Google'a gönderiliyor…"})
+            self._push({"t": "status", "text": self._t("status_sending")})
             try:
                 # Sessiz/kısık kayıtları Google'ın daha iyi duyması için
                 # otomatik kazanç (gain) uygula
                 samples = np.frombuffer(seg, dtype=np.int16).astype(np.float32)
                 rms = float(np.sqrt(np.mean(samples * samples))) if samples.size else 0.0
                 if rms < 5:
-                    self._push({"t": "status", "text": "◇ (sessiz parça, atlandı)"})
+                    self._push({"t": "status", "text": self._t("status_silent")})
                     continue
                 # Sessiz/kısık kayıtları Google'ın daha iyi duyması için
                 # otomatik kazanç (gain) uygula
@@ -472,16 +587,16 @@ class App(tk.Tk):
                 audio = sr.AudioData(seg, SAMPLE_RATE, SAMPLE_WIDTH)
                 text = rec.recognize_google(audio, language=self._lang, show_all=False)
             except sr.UnknownValueError:
-                self._push({"t": "status", "text": "◇ Bu parça anlaşılamadı"})
+                self._push({"t": "status", "text": self._t("status_not_understood")})
                 continue
             except sr.RequestError as exc:
-                self._push({"t": "status", "text": f"◇ Google hizmetine ulaşılamadı: {exc}"})
+                self._push({"t": "status", "text": self._t("status_google_error", exc=exc)})
                 continue
             except Exception as exc:
-                self._push({"t": "status", "text": f"◇ Tanıma hatası: {exc}"})
+                self._push({"t": "status", "text": self._t("status_rec_error", exc=exc)})
                 continue
             preview = text[:60] + ("…" if len(text) > 60 else "")
-            self._push({"t": "status", "text": f"◇ Tanındı: {preview}"})
+            self._push({"t": "status", "text": self._t("status_recognized", preview=preview)})
             self._push({"t": "text", "text": text})
 
     # ── Arayüz döngüsü ───────────────────────────────────────────────────
@@ -533,19 +648,19 @@ class App(tk.Tk):
                     if self.running:
                         self.running = False
                         self._ui_off()
-                        self.status_var.set("■ Durduruldu (sesli komut)")
+                        self.status_var.set(self._t("status_paused_cmd"))
                 elif action == "fast_on":
                     self.fast_mode.set(True)
-                    self.status_var.set("● Hızlı mod açık")
+                    self.status_var.set(self._t("status_fast_on"))
                 elif action == "fast_off":
                     self.fast_mode.set(False)
-                    self.status_var.set("● Normal mod")
+                    self.status_var.set(self._t("status_fast_off"))
                 elif action == "caps_on":
                     self._caps_mode = True
-                    self.status_var.set("● BÜYÜK HARF modu açık")
+                    self.status_var.set(self._t("status_caps_on"))
                 elif action == "caps_off":
                     self._caps_mode = False
-                    self.status_var.set("● küçük harf modu")
+                    self.status_var.set(self._t("status_caps_off"))
             elif kind == "fatal":
                 self.status_var.set(ev["text"])
         self.after(80, self._poll)
@@ -554,7 +669,7 @@ class App(tk.Tk):
     def _type_text(self, text: str) -> None:
         text = text.strip()
         if not text:
-            self._push({"t": "status", "text": "◇ (boş parça)"})
+            self._push({"t": "status", "text": self._t("status_empty")})
             return
         try:
             last_was_key = False
@@ -590,11 +705,11 @@ class App(tk.Tk):
             if self.running and TRAILING_SPACE and not last_was_key:
                 self._typist.type(" ")
             if self.running:
-                self._push({"t": "status", "text": "● Yazıldı ✓"})
+                self._push({"t": "status", "text": self._t("status_typed")})
             else:
-                self._push({"t": "status", "text": "● Komut bekleniyor — 'başlat' deyin"})
+                self._push({"t": "status", "text": self._t("status_stopped_cmd")})
         except Exception as exc:
-            self._push({"t": "status", "text": f"◇ Yazma hatası: {exc}"})
+            self._push({"t": "status", "text": self._t("status_type_error", exc=exc)})
 
     def _perform_key(self, action: str) -> None:
         k = pynput_kb.Key
