@@ -1,157 +1,158 @@
-# 🎙️ Sesli Yazma
+# 🎙️ Voice Typing (Sesli Yazma)
 
-**Windows'ta her yerde çalışan, ücretsiz sistem geneli dikte uygulaması.**
+**Free, open-source, system-wide voice dictation for Windows.**
 
-Konuşun; yazdıklarınız **o anda odakta olan pencereye** gerçek klavye girişi olarak yazılsın. Word, tarayıcı, Notepad, Excel, WhatsApp Web, Discord… metin kutusu olan her yerde çalışır. Kopyala-yapıştır yok, ayrı bir metin kutusu yok.
+Speak and your words are typed into **whichever window has focus** — Word, browser, Notepad, Excel, WhatsApp Web, Discord… anywhere a text cursor exists. No text box, no copy-paste.
 
-[![İndir](https://img.shields.io/badge/İndir-Kurulum%20dosyası-success?style=for-the-badge)](../../releases/latest)
+[![Download](https://img.shields.io/badge/Download-Installer-success?style=for-the-badge)](https://github.com/sinancan1/sesli-yazma/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-blue?style=flat-square)](#)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](#)
-[![Lisans](https://img.shields.io/badge/lisans-MIT-green?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-![Sesli Yazma ekran görüntüsü](docs/screenshot.png)
-
----
-
-## ✨ Özellikler
-
-- **Sistem geneli dikte:** F9 ile başlat/durdur; yazı odaklı pencereye gider.
-- **Metin kutusu yok:** Kopyala-yapıştır gerekmez, imlecin olduğu yere yazar.
-- **Sesli başlatma:** Program kapalıyken bile "başlat" diyerek dinlemeyi açabilirsiniz.
-- **Sesli komutlar:** "nokta", "virgül", "yeni satır", "gönder", "sil", "geri al" vb.
-- **Türkçe karakter desteği:** ş, ğ, ı, ç, ö, ü komutlarda ve metinde sorunsuz.
-- **Mesafeden konuşma:** Hassasiyet ayarı + otomatik kazanç (gain).
-- **Mikrofon seçimi:** Cihazı değiştirdiğinizde **programı yeniden başlatmanız gerekmez**.
-- **Mini kart:** Sağ üstte durur, odağı çalmaz; F10 ile geri getirilir.
-- **Hızlı mod:** Sessizlik eşiğini 500 ms'den 300 ms'ye düşürür.
-- **Tek dosya kurulum:** Python gerekmez; tüm bağımlılıklar paket içindedir.
+![Voice Typing screenshot](docs/screenshot.png)
 
 ---
 
-## 📥 İndirme ve kurulum
+## ✨ Features
 
-1. [**Releases**](https://github.com/sinancan1/sesli-yazma/releases/latest) sayfasından `SesliYazma_Kurulum.exe` dosyasını indirin.
-2. Dosyayı çift tıklayın → **İleri → Kur → Bitir**.
-3. İsterseniz kurulum sırasında **"Masaüstü kısayolu oluştur"** seçeneğini işaretleyin.
-4. Masaüstündeki **Sesli Yazma** kısayolundan programı açın.
+- **System-wide dictation:** Press F9 to start/stop; text goes to the focused window.
+- **No text box:** No copy-paste needed — types exactly where the cursor is.
+- **Voice start:** Say "start" to begin listening even when paused.
+- **Voice commands:** "period", "comma", "new line", "send/enter", "delete", "undo", etc.
+- **Turkish character support:** ş, ğ, ı, ç, ö, ü in both commands and text.
+- **Distant speech:** Sensitivity control + automatic gain (AGC).
+- **Instant microphone switching:** Change the input device without restarting the app.
+- **Mini card:** Stays on top without stealing focus; restore with F10.
+- **Fast mode:** Lowers the silence threshold from 500 ms to 300 ms.
+- **One-file installer:** No Python required — all dependencies are bundled.
 
-> **Windows SmartScreen uyarısı:** Uygulama ücretsiz ve açık kaynak olduğu için dijital imza yoktur. "Windows bilgisayarınızı korudu" ekranı çıkarsa **Ek bilgi → Yine de çalıştır** deyin.
+The interface follows your speech language: Turkish UI for Turkish, English UI otherwise.
 
-**Sistem gereksinimleri:** Windows 10/11 (64-bit), internet bağlantısı, mikrofon.
+---
 
-> **Kurulum, Microsoft Visual C++ 2015-2022 (x64) çalışma zamanını da kontrol eder; kurulu değilse kurulum tarafından otomatik kurulur.** Ayrı bir işlem yapmanız gerekmez.
+## 📥 Download & install
 
-### Kurulum olmadan (kaynak koddan)
+1. Download `SesliYazma_Kurulum.exe` from the [**Releases**](https://github.com/sinancan1/sesli-yazma/releases/latest) page.
+2. Double-click → **Next → Install → Finish**.
+3. Optionally check "Create desktop shortcut" during setup.
+4. Launch **Sesli Yazma** from the desktop shortcut or Start menu.
 
-Python 3.10+ kurulu olmalı:
+> **Windows SmartScreen:** The app is free and open source, so it is not digitally signed. If you see "Windows protected your PC", click **More info → Run anyway**.
+
+**System requirements:** Windows 10/11 (64-bit), internet connection, microphone.
+
+> The installer also checks for **Microsoft Visual C++ 2015–2022 (x64) Runtime** and installs it automatically if missing. You don't need to do anything.
+
+### Run from source
+
+Requires Python 3.10+:
 
 ```bash
-git clone https://github.com/<kullanici>/sesli-yazma.git
+git clone https://github.com/sinancan1/sesli-yazma.git
 cd sesli-yazma
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe sesli_yazma.py
 ```
 
-Windows'ta `setup.bat` dosyası bunu otomatik yapar; ardından `start.bat` ile çalıştırın.
+On Windows, `setup.bat` does this automatically; then run `start.bat`.
 
 ---
 
-## 🚀 Kullanım
+## 🚀 Usage
 
-1. Programı açın. Mini kart sağ üstte görünür.
-2. Yazmak istediğiniz uygulamaya tıklayın (imleç metin alanında olsun).
-3. **F9**'a basın veya **"başlat"** deyin. Kart "● Dinliyor…" durumuna geçer.
-4. Konuşun. Her cümle/parça tanınıp odaklı pencereye yazılır.
-5. Bitince **F9**'a tekrar basın veya **"durdur"** deyin.
+1. Open the app. The mini card appears in the top-right corner.
+2. Click into the target application (cursor must be in a text field).
+3. Press **F9** or say **"start"**. The card shows "● Listening…".
+4. Speak. Each sentence/segment is recognized and typed into the focused window.
+5. Press **F9** again or say **"stop"** when done.
 
-| Kısayol | İşlev |
+| Shortcut | Action |
 |---|---|
-| **F9** | Dinlemeyi başlat / durdur |
-| **F10** | Mini kartı geri getir |
-| Kartı kapatma | Programdan çıkar |
+| **F9** | Start / stop listening |
+| **F10** | Restore the mini card |
+| Closing the card | Exits the program |
 
-> **İpucu:** Uzaktan konuşuyorsanız **Hassasiyet → Çok yüksek** seçin. Gürültülü ortamda "Yüksek" veya "Orta" daha iyi sonuç verebilir.
+> **Tip:** For distant speech, set **Sensitivity → Very high**. In noisy environments, "High" or "Medium" may work better.
 
-### Mikrofon değiştirme
+### Microphone selection
 
-Karttaki **Mik** kutusundan istediğiniz giriş cihazını seçin. Seçim **anında** uygulanır; programı yeniden başlatmanız gerekmez. Cihaz değişirken kart kısa süre "Mikrofon değiştiriliyor…" gösterir.
+Pick the input device from the **Mic** dropdown on the card. The change is applied **instantly** — no restart required. While switching, the card briefly shows "Switching microphone…".
 
 ---
 
-## 🗣️ Sesli komutlar
+## 🗣️ Voice commands
 
-Aşağıdaki kelimeleri söylediğinizde metin olarak yazılmaz; ilgili işlem yapılır.
+These words are not typed as text; they trigger the corresponding action.
 
-### Noktalama ve biçim
+### Punctuation & formatting
 
-| Söylediğiniz | Sonuç |
+| Say | Result |
 |---|---|
-| nokta | `.` |
-| virgül | `,` |
-| soru işareti / soru | `?` |
-| ünlem işareti / ünlem | `!` |
-| iki nokta | `:` |
-| noktalı virgül | `;` |
-| parantez aç / parantez kapa | `(` / `)` |
-| tırnak aç / tırnak kapa | `"` |
-| boşluk | boşluk |
-| yeni satır | Enter |
-| yeni paragraf | Çift Enter |
+| period | `.` |
+| comma | `,` |
+| question mark / question | `?` |
+| exclamation mark / exclamation | `!` |
+| colon | `:` |
+| semicolon | `;` |
+| open parenthesis / close parenthesis | `(` / `)` |
+| open quote / close quote | `"` |
+| space | space |
+| new line | Enter |
+| new paragraph | Double Enter |
 
-### Tuşlar ve düzenleme
+### Keys & editing
 
-| Söylediğiniz | Sonuç |
+| Say | Result |
 |---|---|
-| gönder / enter | Enter |
-| tab / sekme | Tab |
-| sil | Backspace |
-| kelime sil | Ctrl + Backspace |
-| geri al | Ctrl + Z |
-| tümünü sil / hepsini sil | Tümünü seç + sil |
+| send / enter | Enter |
+| tab | Tab |
+| delete | Backspace |
+| delete word | Ctrl + Backspace |
+| undo | Ctrl + Z |
+| delete all / delete everything | Select all + delete |
 | escape | Esc |
 
-### Program kontrolü
+### Program control
 
-| Söylediğiniz | Sonuç |
+| Say | Result |
 |---|---|
-| başlat / dinlemeye başla | Dinlemeyi başlatır |
-| durdur / programı durdur / kapat / bitir | Dinlemeyi durdurur |
-| hızlı mod | Hızlı mod (300 ms sessizlik) |
-| normal mod | Normal mod (500 ms sessizlik) |
-| büyük harf | BÜYÜK HARF modu |
-| küçük harf | Normal harf modu |
+| start / begin listening | Start listening |
+| stop / stop program / close / finish | Stop listening |
+| fast mode | Fast mode (300 ms silence) |
+| normal mode | Normal mode (500 ms silence) |
+| caps / capital letters | CAPS mode |
+| lowercase | Normal case mode |
 
-> "tamam", "evet", "hayır" gibi günlük kelimeler komut değildir; normal metin olarak yazılır.
+> Everyday words like "okay", "yes", "no" are typed as normal text, not commands.
 
 ---
 
-## 🛠️ Sorun giderme
+## 🛠️ Troubleshooting
 
-| Sorun | Çözüm |
+| Problem | Solution |
 |---|---|
-| **"Mikrofon hatası"** | Windows Ayarlar → Gizlilik ve güvenlik → Mikrofon → "Uygulamaların mikrofonunuza erişmesine izin ver" açık olsun. |
-| **"Google hizmetine ulaşılamadı"** | İnternet bağlantınızı kontrol edin; kurumsal ağlar/vpn engelliyor olabilir. |
-| **Uzaktan algılamıyor** | Hassasiyeti **Çok yüksek** yapın; mikrofona doğrudan bakacak şekilde konumlandırın. |
-| **Yanlış cihaz seçili** | Karttaki **Mik** kutusundan doğru cihazı seçin — yeniden başlatma gerekmez. |
-| **Kart kayboldu** | **F10**'a basın veya görev çubuğundaki simgeye tıklayın. |
-| **SmartScreen uyarısı** | **Ek bilgi → Yine de çalıştır**. |
+| **"Microphone error"** | Windows Settings → Privacy & security → Microphone → "Let apps access your microphone" must be on. |
+| **"Could not reach Google service"** | Check your internet connection; corporate networks/VPNs may block it. |
+| **Not detecting distant speech** | Set Sensitivity to **Very high**; face the microphone. |
+| **Wrong device selected** | Pick the correct device from the **Mic** dropdown — no restart needed. |
+| **Card disappeared** | Press **F10** or click the taskbar icon. |
+| **SmartScreen warning** | Click **More info → Run anyway**. |
 
 ---
 
-## 🔒 Gizlilik ve notlar
+## 🔒 Privacy
 
-- **Uygulama uzaktan hiçbir veri toplamaz.** Konuşma parçaları yalnızca tanıma için Google'ın ücretsiz Web Speech uç noktasına gönderilir; bunun dışında herhangi bir sunucuya, analiz servisine veya üçüncü tarafa veri aktarılmaz. Yazılar tamamen sizin bilgisayarınızda oluşturulur.
-- Konuşma parçaları tanıma için **Google'ın ücretsiz Web Speech uç noktasına** gönderilir. Ayrı bir API anahtarı gerekmez.
-- Uygulama kendi sunucusuna hiçbir veri göndermez; yazılar doğrudan bilgisayarınızda oluşturulur.
-- Google uç noktası resmî olmayan, ücretsiz bir hizmettir; ileride değişebilir veya sınırlandırılabilir. Yoğun kullanım için Google Cloud Speech-to-Text gibi resmî bir API'ye geçmeniz önerilir.
-- Bu proje Google, Microsoft veya başka bir şirketle bağlantılı değildir.
+- **The app collects no remote data.** Speech segments are sent only to Google's free Web Speech endpoint for recognition; nothing else is transmitted to any server, analytics service, or third party. All text is generated locally on your computer.
+- Speech segments are sent to **Google's free Web Speech endpoint** for recognition. No separate API key is required.
+- The app has no connection to Google, Microsoft, or any other company.
+- The Google endpoint is an unofficial, free service and may change or be rate-limited in the future. For heavy use, consider an official API such as Google Cloud Speech-to-Text.
 
 ---
 
-## 🧑‍💻 Geliştirme
+## 🧑‍💻 Development
 
-### Derleme (tek dosya EXE)
+### Build (single-file EXE)
 
 ```bash
 .venv\Scripts\python.exe -m pip install pyinstaller
@@ -161,32 +162,34 @@ Aşağıdaki kelimeleri söylediğinizde metin olarak yazılmaz; ilgili işlem y
   --hidden-import numpy sesli_yazma.py
 ```
 
-### Kurulum dosyası (Inno Setup)
+### Installer (Inno Setup)
 
-1. [Inno Setup 6](https://jrsoftware.org/isinfo.php) kurun.
-2. `installer.iss` dosyasını açıp derleyin veya komut satırından:
+1. Install [Inno Setup 6](https://jrsoftware.org/isinfo.php).
+2. Open `installer.iss` and compile, or from the command line:
 
 ```bash
 "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 ```
 
-Çıktı: `installer_output\SesliYazma_Kurulum.exe`
+Output: `installer_output\SesliYazma_Kurulum.exe`
+
+The installer bundles the Microsoft Visual C++ 2015–2022 (x64) Runtime and installs it automatically if missing.
 
 ---
 
-## 🤝 Katkı
+## 🤝 Contributing
 
-Hata bildirimi, öneri ve pull request'ler memnuniyetle karşılanır. Lütfen önce bir issue açın; büyük değişiklikler için yaklaşımı birlikte netleştirelim.
+Bug reports, suggestions, and pull requests are welcome. Please open an issue first; for large changes, let's discuss the approach together.
 
-## 📄 Lisans
+## 📄 License
 
-[MIT](LICENSE) — ücretsiz kullanabilir, değiştirebilir ve dağıtabilirsiniz.
+[MIT](LICENSE) — free to use, modify, and distribute.
 
 ---
 
 <details>
-<summary><b>English summary</b></summary>
+<summary><b>Türkçe özet</b></summary>
 
-**Sesli Yazma** is a free, open-source, system-wide dictation app for Windows. It uses Google's free Web Speech endpoint for Turkish (and 9 other languages) speech recognition, then types the result into whichever window has focus using real keyboard input — no copy-paste, no text box. Press **F9** to start/stop, say **"başlat"** to start by voice, and use voice commands for punctuation, Enter, Tab, undo, etc. The microphone can be switched instantly without restarting the app. Installer requires no Python; source build is Python 3.10+.
+**Sesli Yazma**, Windows'ta her yerde çalışan ücretsiz ve açık kaynaklı sistem geneli dikte uygulamasıdır. Google'ın ücretsiz Web Speech uç noktasıyla konuşmanızı metne çevirir ve odaktaki pencereye gerçek klavye girişi olarak yazar. **F9** ile başlat/durdur, **"başlat"** diyerek sesli başlatma, noktalama/tuş sesli komutları, 10 dil desteği ve hazır kurulum dosyası. Uygulama uzaktan hiçbir veri toplamaz.
 
 </details>
