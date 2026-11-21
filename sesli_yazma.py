@@ -105,6 +105,7 @@ _STRINGS = {
         "label_sens": "Hass",
         "chk_fast": "Hızlı",
         "help": "F9: başlat/durdur · F10: pencereyi geri getir · Hassasiyet: uzaktan için 'Çok yüksek'",
+        "status_lang_changed": "● Dil: {lang} ({code})",
     },
     "en": {
         "title": "Voice Typing · Google",
@@ -140,6 +141,7 @@ _STRINGS = {
         "label_sens": "Sens",
         "chk_fast": "Fast",
         "help": "F9: start/stop · F10: restore window · Sensitivity: 'Very high' for distant speech",
+        "status_lang_changed": "● Language: {lang} ({code})",
     },
 }
 
@@ -319,7 +321,7 @@ class App(tk.Tk):
         val = LANGS.get(self.langvar.get())
         if val:
             self._lang = val[0]
-            self._refresh_ui_lang()
+            self.after_idle(self._refresh_ui_lang)
 
     def _refresh_ui_lang(self) -> None:
         try:
@@ -338,6 +340,10 @@ class App(tk.Tk):
                 self._chk_fast.configure(text=self._t("chk_fast"))
             if hasattr(self, "_lbl_help"):
                 self._lbl_help.configure(text=self._t("help"))
+            if getattr(self, "_lang_initialized", False):
+                self.status_var.set(self._t("status_lang_changed", lang=self.langvar.get(), code=self._lang))
+            else:
+                self._lang_initialized = True
         except Exception:
             pass
 

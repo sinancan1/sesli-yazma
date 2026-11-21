@@ -77,7 +77,9 @@ On Windows, `setup.bat` does this automatically; then run `start.bat`.
 
 ### Microphone selection
 
-Pick the input device from the **Mic** dropdown on the card. The change is applied **instantly** — no restart required. While switching, the card briefly shows "Switching microphone…".
+Pick the input device from the **Mic** dropdown on the card. The change is applied **instantly** - no restart required. While switching, the card briefly shows "Switching microphone…".
+
+> **Languages:** Recognition works in all 10 supported languages — speak in the selected language. The interface is shown in Turkish or English.
 
 ---
 
