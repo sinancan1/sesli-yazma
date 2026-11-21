@@ -6,6 +6,7 @@ metne çevrilip o anda **odakta olan** pencereye (Word, tarayıcı, Notepad,
 sohbet uygulaması, Excel…) gerçek klavye girişi olarak yazılır.
 
 - Metin kutusu yok; kopyala-yapıştır gerekmez.
+- Uygulama uzaktan hiçbir veri toplamaz; konuşma yalnızca tanıma için Google'a gönderilir.
 - Sesli komutlar: "nokta", "virgül", "yeni satır", "gönder/enter", "sil",
   "geri al", "tab" vb. ilgili işarete/tuşa çevrilir.
 - Sağ üstteki mini kart durumunuzu gösterir; odağı çalmaz.

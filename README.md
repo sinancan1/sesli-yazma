@@ -141,6 +141,7 @@ Aşağıdaki kelimeleri söylediğinizde metin olarak yazılmaz; ilgili işlem y
 
 ## 🔒 Gizlilik ve notlar
 
+- **Uygulama uzaktan hiçbir veri toplamaz.** Konuşma parçaları yalnızca tanıma için Google'ın ücretsiz Web Speech uç noktasına gönderilir; bunun dışında herhangi bir sunucuya, analiz servisine veya üçüncü tarafa veri aktarılmaz. Yazılar tamamen sizin bilgisayarınızda oluşturulur.
 - Konuşma parçaları tanıma için **Google'ın ücretsiz Web Speech uç noktasına** gönderilir. Ayrı bir API anahtarı gerekmez.
 - Uygulama kendi sunucusuna hiçbir veri göndermez; yazılar doğrudan bilgisayarınızda oluşturulur.
 - Google uç noktası resmî olmayan, ücretsiz bir hizmettir; ileride değişebilir veya sınırlandırılabilir. Yoğun kullanım için Google Cloud Speech-to-Text gibi resmî bir API'ye geçmeniz önerilir.
